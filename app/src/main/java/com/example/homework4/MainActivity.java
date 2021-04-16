@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -33,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
 
     List<Movie> movies;
 
-    Switch switchDNMode;
+//    Switch switchDNMode;
     SharedPreferences sharedPreferences = null;
+    boolean lightMode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,36 +45,37 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         RecyclerView rvMovies = findViewById(R.id.rvMovies);
         movies = new ArrayList<>();
-        switchDNMode = findViewById(R.id.switchDNMode);
+//        switchDNMode = findViewById(R.id.switchDNMode);
 
         sharedPreferences = getSharedPreferences("night", 0);
         Boolean defaultNight = sharedPreferences.getBoolean("night_mode", true);
         if (defaultNight)
         {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            switchDNMode.setChecked(true);
+            lightMode = false;
+//            switchDNMode.setChecked(true);
         }
 
-        switchDNMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    switchDNMode.setChecked(true);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("night_mode", true);
-                    editor.commit();
-                }
-                else
-                {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    switchDNMode.setChecked(false);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("night_mode", false);
-                    editor.commit();
-                }
-            }
-        });
+//        switchDNMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked){
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                    switchDNMode.setChecked(true);
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putBoolean("night_mode", true);
+//                    editor.commit();
+//                }
+//                else
+//                {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                    switchDNMode.setChecked(false);
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putBoolean("night_mode", false);
+//                    editor.commit();
+//                }
+//            }
+//        });
 
         // Create the adapter
         MovieAdapter movieAdapter = new MovieAdapter(this, movies);
@@ -105,5 +109,35 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onFailure");
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d("MainActivity", "selected menu item");
+        if (item.getItemId() == R.id.light_dark_mode)
+        {
+            if (lightMode){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                lightMode = false;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("night_mode", true);
+                editor.commit();
+            }
+            else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                lightMode = true;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("night_mode", false);
+                editor.commit();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
