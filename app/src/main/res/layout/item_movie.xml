@@ -19,6 +19,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivPoster"
+        android:fontFamily="@font/black_ops_one"
         android:textSize="24sp"
         tools:text="Godzilla vs. Kong" />
 
